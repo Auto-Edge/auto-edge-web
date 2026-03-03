@@ -125,6 +125,13 @@ export const apiClient = {
 
   delete: <T>(endpoint: string, options: RequestOptions = {}): Promise<T> =>
     request<T>(endpoint, { ...options, method: 'DELETE' }),
+
+  patch: <T>(endpoint: string, body: unknown, options: RequestOptions = {}): Promise<T> =>
+    request<T>(endpoint, {
+      ...options,
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    }),
 };
 
 export default apiClient;

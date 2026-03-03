@@ -27,11 +27,7 @@ export async function updateModel(
   modelId: string,
   data: Partial<CreateModelRequest>
 ): Promise<Model> {
-  return apiClient.request<Model>(`${BASE_PATH}/models/${modelId}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
+  return apiClient.patch<Model>(`${BASE_PATH}/models/${modelId}`, data);
 }
 
 export async function deleteModel(modelId: string): Promise<void> {
@@ -53,13 +49,9 @@ export async function publishVersion(
   version: string,
   isPublished: boolean
 ): Promise<ModelVersion> {
-  return apiClient.request<ModelVersion>(
+  return apiClient.patch<ModelVersion>(
     `${BASE_PATH}/models/${modelId}/versions/${version}`,
-    {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ is_published: isPublished }),
-    }
+    { is_published: isPublished }
   );
 }
 
