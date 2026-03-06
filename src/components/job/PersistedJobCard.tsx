@@ -72,29 +72,29 @@ export const PersistedJobCard: React.FC<PersistedJobCardProps> = ({
   }, [conversion.output_file]);
 
   return (
-    <div className="bg-slate-900 rounded-lg p-4 border border-slate-800">
+    <div className="job-card">
       <JobCardHeader status={displayStatus} onRemove={onRemove} />
 
       {/* Show input filename */}
       {conversion.input_filename && (
-        <div className="mb-3 text-xs text-slate-500">
+        <div className="file-info">
           {conversion.is_demo ? 'Demo: ' : 'File: '}
-          <span className="text-slate-400">{conversion.input_filename}</span>
+          <span className="file-info-name">{conversion.input_filename}</span>
         </div>
       )}
 
       {/* Error message */}
       {isFailed && conversion.error_message && (
-        <div className="mb-3 p-2 bg-red-900/20 border border-red-800 rounded text-sm text-red-400">
+        <div className="error-box error-box-sm">
           {conversion.error_message}
         </div>
       )}
 
       {/* Processing state */}
       {isProcessing && (
-        <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent" />
-          <span className="ml-3 text-slate-400 text-sm">
+        <div className="loading-inline">
+          <div className="spinner spinner-lg" />
+          <span className="processing-text">
             {displayStatus}...
           </span>
         </div>
@@ -107,7 +107,7 @@ export const PersistedJobCard: React.FC<PersistedJobCardProps> = ({
 
           {/* Show if already registered */}
           {conversion.registered_model_id && (
-            <div className="mt-3 p-2 bg-green-900/20 border border-green-800 rounded text-xs text-green-400">
+            <div className="success-box">
               Registered to model registry
             </div>
           )}

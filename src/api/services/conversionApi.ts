@@ -7,8 +7,6 @@
 import { apiClient } from '../client';
 import { config } from '../../config/env';
 import type {
-  TaskResponse,
-  DemoResponse,
   StatusResponse,
   ModelsListResponse,
   Conversion,

@@ -45,7 +45,7 @@ const ConvertPage: React.FC = () => {
   }, []);
 
   // Called when a new job starts conversion (becomes persisted)
-  const onJobStarted = useCallback((conversionId: string) => {
+  const onJobStarted = useCallback((_conversionId: string) => {
     // Refresh the conversions list to include the new one
     fetchConversions();
   }, [fetchConversions]);
@@ -75,21 +75,21 @@ const ConvertPage: React.FC = () => {
   }, []);
 
   // Show add button if no jobs exist
-  const showAddButton = newJobs.length === 0 && conversions.length === 0;
+  // Future: const showAddButton = newJobs.length === 0 && conversions.length === 0;
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-2">Convert Models</h1>
-        <p className="text-slate-400 text-sm">
+      <div className="page-header">
+        <h1 className="page-title">Convert Models</h1>
+        <p className="page-description">
           Convert PyTorch models to CoreML with FP16 quantization.
         </p>
       </div>
 
       <ErrorBoundary>
         {loading ? (
-          <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent" />
+          <div className="loading-center-sm">
+            <div className="spinner spinner-lg" />
           </div>
         ) : (
           <JobGrid>
@@ -119,8 +119,8 @@ const ConvertPage: React.FC = () => {
         )}
       </ErrorBoundary>
 
-      <p className="text-slate-600 text-xs mt-8">
-        Scale workers: <code className="text-slate-500">docker-compose up --scale worker=3</code>
+      <p className="helper-text">
+        Scale workers: <code>docker-compose up --scale worker=3</code>
       </p>
     </div>
   );

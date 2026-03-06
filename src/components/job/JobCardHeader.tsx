@@ -8,14 +8,14 @@ interface JobCardHeaderProps {
 
 export const JobCardHeader: React.FC<JobCardHeaderProps> = ({ status, onRemove }) => {
   return (
-    <div className="flex items-center justify-between mb-4">
+    <div className="job-card-header">
       <StatusBadge status={status} />
       <button
         onClick={onRemove}
-        className="text-slate-600 hover:text-slate-400 transition-colors"
+        className="btn-icon"
         title="Remove"
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>

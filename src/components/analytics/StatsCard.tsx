@@ -17,21 +17,21 @@ const StatsCard: React.FC<StatsCardProps> = ({
 }) => {
   return (
     <div
-      className={`bg-slate-900 border rounded-xl p-4 ${
-        highlight ? 'border-blue-800' : 'border-slate-800'
+      className={`stats-card ${
+        highlight ? 'stats-card-highlight' : ''
       }`}
     >
-      <div className="flex items-center gap-2 mb-2">
+      <div className="stats-card-header">
         {icon && (
-          <span className={highlight ? 'text-blue-400' : 'text-slate-500'}>
+          <span className={highlight ? 'stats-card-icon-highlight' : 'stats-card-icon'}>
             {icon}
           </span>
         )}
-        <p className="text-xs text-slate-500 uppercase font-medium">{label}</p>
+        <p className="stats-card-label">{label}</p>
       </div>
       <p
-        className={`font-bold text-white ${
-          large ? 'text-3xl' : 'text-2xl'
+        className={`stats-card-value ${
+          large ? 'stats-card-value-lg' : ''
         }`}
       >
         {value}

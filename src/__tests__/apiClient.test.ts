@@ -55,7 +55,7 @@ describe('apiClient', () => {
   describe('request methods', () => {
     it('get method makes GET request', async () => {
       const mockResponse = { data: 'test' };
-      global.fetch = vi.fn().mockResolvedValue({
+      globalThis.fetch = vi.fn().mockResolvedValue({
         ok: true,
         headers: new Headers({ 'content-type': 'application/json' }),
         json: () => Promise.resolve(mockResponse),
@@ -64,7 +64,7 @@ describe('apiClient', () => {
       const result = await apiClient.get<{ data: string }>('/test');
 
       expect(result).toEqual(mockResponse);
-      expect(global.fetch).toHaveBeenCalledWith(
+      expect(globalThis.fetch).toHaveBeenCalledWith(
         'http://localhost:8000/test',
         expect.objectContaining({ method: 'GET' })
       );
@@ -72,7 +72,7 @@ describe('apiClient', () => {
 
     it('post method makes POST request with JSON body', async () => {
       const mockResponse = { success: true };
-      global.fetch = vi.fn().mockResolvedValue({
+      globalThis.fetch = vi.fn().mockResolvedValue({
         ok: true,
         headers: new Headers({ 'content-type': 'application/json' }),
         json: () => Promise.resolve(mockResponse),
@@ -81,7 +81,7 @@ describe('apiClient', () => {
       const result = await apiClient.post<{ success: boolean }>('/test', { key: 'value' });
 
       expect(result).toEqual(mockResponse);
-      expect(global.fetch).toHaveBeenCalledWith(
+      expect(globalThis.fetch).toHaveBeenCalledWith(
         'http://localhost:8000/test',
         expect.objectContaining({
           method: 'POST',
@@ -91,7 +91,7 @@ describe('apiClient', () => {
     });
 
     it('throws ApiError on non-ok response', async () => {
-      global.fetch = vi.fn().mockResolvedValue({
+      globalThis.fetch = vi.fn().mockResolvedValue({
         ok: false,
         status: 400,
         headers: new Headers({ 'content-type': 'application/json' }),
@@ -104,7 +104,7 @@ describe('apiClient', () => {
     });
 
     it('throws ApiError on network error', async () => {
-      global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
+      globalThis.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
 
       await expect(apiClient.get('/test')).rejects.toThrow(ApiError);
     });

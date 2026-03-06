@@ -64,19 +64,19 @@ const ModelDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent" />
+      <div className="loading-center">
+        <div className="spinner spinner-lg" />
       </div>
     );
   }
 
   if (error || !model) {
     return (
-      <div className="text-center py-12">
+      <div className="empty-state">
         <p className="text-red-400 mb-4">{error || 'Model not found'}</p>
         <button
           onClick={() => navigate('/models')}
-          className="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700"
+          className="btn btn-secondary"
         >
           Back to Models
         </button>
@@ -86,31 +86,31 @@ const ModelDetailPage: React.FC = () => {
 
   return (
     <div>
-      <div className="mb-8">
+      <div className="page-header">
         <button
           onClick={() => navigate('/models')}
-          className="text-slate-400 hover:text-white text-sm mb-4 flex items-center gap-1"
+          className="back-btn"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           Back to Models
         </button>
 
-        <div className="flex items-start justify-between">
+        <div className="model-detail-header">
           <div>
-            <h1 className="text-2xl font-bold text-white mb-2">{model.name}</h1>
+            <h1 className="page-title">{model.name}</h1>
             {model.description && (
-              <p className="text-slate-400 text-sm mb-4">{model.description}</p>
+              <p className="page-description mb-4">{model.description}</p>
             )}
-            <p className="text-xs text-slate-500">
+            <p className="model-detail-meta">
               Created: {new Date(model.created_at).toLocaleDateString()}
             </p>
           </div>
 
           <button
             onClick={handleDelete}
-            className="px-3 py-1.5 text-sm text-red-400 border border-red-800 rounded-lg hover:bg-red-900/20 transition-colors"
+            className="btn btn-danger-outline"
           >
             Delete
           </button>
@@ -118,32 +118,32 @@ const ModelDetailPage: React.FC = () => {
       </div>
 
       {metrics && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-slate-900 border border-slate-800 rounded-lg p-4">
-            <p className="text-xs text-slate-500 uppercase mb-1">Downloads</p>
-            <p className="text-2xl font-bold text-white">{metrics.total_downloads}</p>
+        <div className="grid grid-cols-2 grid-md-cols-4 gap-4 mb-8">
+          <div className="card card-sm">
+            <p className="metrics-card-header">Downloads</p>
+            <p className="metrics-card-value">{metrics.total_downloads}</p>
           </div>
-          <div className="bg-slate-900 border border-slate-800 rounded-lg p-4">
-            <p className="text-xs text-slate-500 uppercase mb-1">Inferences</p>
-            <p className="text-2xl font-bold text-white">{metrics.inference_stats.total_inferences}</p>
+          <div className="card card-sm">
+            <p className="metrics-card-header">Inferences</p>
+            <p className="metrics-card-value">{metrics.inference_stats.total_inferences}</p>
           </div>
-          <div className="bg-slate-900 border border-slate-800 rounded-lg p-4">
-            <p className="text-xs text-slate-500 uppercase mb-1">Avg Latency</p>
-            <p className="text-2xl font-bold text-white">
+          <div className="card card-sm">
+            <p className="metrics-card-header">Avg Latency</p>
+            <p className="metrics-card-value">
               {metrics.inference_stats.avg_latency_ms
                 ? `${metrics.inference_stats.avg_latency_ms.toFixed(1)}ms`
                 : '-'}
             </p>
           </div>
-          <div className="bg-slate-900 border border-slate-800 rounded-lg p-4">
-            <p className="text-xs text-slate-500 uppercase mb-1">Active Devices</p>
-            <p className="text-2xl font-bold text-white">{metrics.active_devices}</p>
+          <div className="card card-sm">
+            <p className="metrics-card-header">Active Devices</p>
+            <p className="metrics-card-value">{metrics.active_devices}</p>
           </div>
         </div>
       )}
 
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Versions</h2>
+      <div className="card">
+        <h2 className="card-title">Versions</h2>
         <VersionList
           versions={model.versions}
           onPublish={handlePublish}

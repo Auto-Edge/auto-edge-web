@@ -8,7 +8,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
   if (!message) return null;
 
   return (
-    <p className="text-red-400 text-sm mb-3">{message}</p>
+    <p className="error-message">{message}</p>
   );
 };
 

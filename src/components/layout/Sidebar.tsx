@@ -12,7 +12,7 @@ const navItems: NavItem[] = [
     path: '/convert',
     label: 'Convert',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
       </svg>
     ),
@@ -21,7 +21,7 @@ const navItems: NavItem[] = [
     path: '/models',
     label: 'Models',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
       </svg>
     ),
@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
     path: '/analytics',
     label: 'Analytics',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
       </svg>
     ),
@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
     path: '/sdk',
     label: 'SDK',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
       </svg>
     ),
@@ -48,23 +48,19 @@ const navItems: NavItem[] = [
 
 const Sidebar: React.FC = () => {
   return (
-    <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col">
-      <div className="p-4 border-b border-slate-800">
-        <h1 className="text-xl font-bold text-white">AutoEdge</h1>
-        <p className="text-xs text-slate-500 mt-1">Edge ML Platform</p>
+    <aside className="sidebar">
+      <div className="sidebar-header">
+        <h1 className="sidebar-title">AutoEdge</h1>
+        <p className="sidebar-subtitle">Edge ML Platform</p>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="sidebar-nav">
         {navItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`
+              `nav-link ${isActive ? 'active' : ''}`
             }
           >
             {item.icon}
@@ -73,8 +69,8 @@ const Sidebar: React.FC = () => {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-slate-800">
-        <p className="text-xs text-slate-600">v1.0.0</p>
+      <div className="sidebar-footer">
+        <p className="sidebar-version">v1.0.0</p>
       </div>
     </aside>
   );

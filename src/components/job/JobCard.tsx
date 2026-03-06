@@ -76,7 +76,7 @@ export const JobCard: React.FC<JobCardProps> = ({ jobId, onRemove, onStarted }) 
   }, [selectFile, setError]);
 
   return (
-    <div className="bg-slate-900 rounded-lg p-4 border border-slate-800">
+    <div className="job-card">
       <JobCardHeader
         status={displayStatus}
         onRemove={() => onRemove(jobId)}

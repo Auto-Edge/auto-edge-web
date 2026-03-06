@@ -5,20 +5,20 @@ interface StatusBadgeProps {
 }
 
 const statusStyles: Record<string, string> = {
-  Complete: 'text-green-400',
-  Completed: 'text-green-400',
-  Failed: 'text-red-400',
-  Processing: 'text-blue-400',
-  Pending: 'text-yellow-400',
+  Complete: 'status-complete',
+  Completed: 'status-complete',
+  Failed: 'status-failed',
+  Processing: 'status-processing',
+  Pending: 'status-pending',
 };
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
   if (!status) return null;
 
-  const colorClass = statusStyles[status] || 'text-slate-400';
+  const colorClass = statusStyles[status] || 'status-default';
 
   return (
-    <span className={`text-xs font-medium ${colorClass}`}>
+    <span className={`status-badge ${colorClass}`}>
       {status}
     </span>
   );

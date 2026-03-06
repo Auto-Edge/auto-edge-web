@@ -23,24 +23,24 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
 }) => {
   if (isComplete) {
     return (
-      <div className="space-y-2 mt-4">
+      <div className="action-buttons-vertical">
         {onRegister && (
           <button
             onClick={onRegister}
-            className="w-full py-2 px-3 bg-blue-600 text-white font-medium rounded text-sm hover:bg-blue-700 transition-colors"
+            className="btn btn-primary btn-full btn-sm"
           >
             Register to Models
           </button>
         )}
         <button
           onClick={onDownload}
-          className="w-full py-2 px-3 bg-white text-slate-900 font-medium rounded text-sm hover:bg-slate-200 transition-colors"
+          className="btn btn-white btn-full btn-sm"
         >
           Download .mlmodel
         </button>
         <button
           onClick={onReset}
-          className="w-full py-2 text-slate-500 hover:text-slate-300 transition-colors text-sm"
+          className="btn btn-ghost btn-full btn-sm"
         >
           Remove
         </button>
@@ -49,20 +49,18 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   }
 
   return (
-    <div className="flex gap-2">
+    <div className="action-buttons">
       <button
         onClick={onUpload}
         disabled={!file || isUploading}
-        className="flex-1 py-2 px-3 bg-white text-slate-900 font-medium rounded text-sm
-          hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="btn btn-white btn-flex-1 btn-sm"
       >
         {isUploading ? 'Uploading...' : 'Convert'}
       </button>
       <button
         onClick={onDemo}
         disabled={isUploading}
-        className="py-2 px-3 border border-slate-700 text-slate-300 rounded text-sm
-          hover:border-slate-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="btn btn-outline btn-sm"
       >
         Demo
       </button>

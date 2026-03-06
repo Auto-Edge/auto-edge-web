@@ -26,12 +26,12 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col">
+    <div className="app-container">
       <Header />
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-8">
-        <div className="mb-8">
-          <p className="text-slate-400 text-sm">
+      <main className="page-main">
+        <div className="page-header">
+          <p className="page-description">
             Convert PyTorch models to CoreML with FP16 quantization.
           </p>
         </div>
@@ -49,8 +49,8 @@ const App: React.FC = () => {
           </JobGrid>
         </ErrorBoundary>
 
-        <p className="text-slate-600 text-xs mt-8">
-          Scale workers: <code className="text-slate-500">docker-compose up --scale worker=3</code>
+        <p className="helper-text">
+          Scale workers: <code>docker-compose up --scale worker=3</code>
         </p>
       </main>
 

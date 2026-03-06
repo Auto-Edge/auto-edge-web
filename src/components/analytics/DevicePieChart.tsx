@@ -22,7 +22,7 @@ const DevicePieChart: React.FC<DevicePieChartProps> = ({ data }) => {
 
   if (chartData.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-slate-500">
+      <div className="chart-empty">
         No data available
       </div>
     );
@@ -40,7 +40,7 @@ const DevicePieChart: React.FC<DevicePieChartProps> = ({ data }) => {
           paddingAngle={2}
           dataKey="value"
         >
-          {chartData.map((entry, index) => (
+          {chartData.map((_, index) => (
             <Cell
               key={`cell-${index}`}
               fill={COLORS[index % COLORS.length]}
@@ -57,7 +57,7 @@ const DevicePieChart: React.FC<DevicePieChartProps> = ({ data }) => {
         />
         <Legend
           formatter={(value) => (
-            <span className="text-slate-400 text-sm">{value}</span>
+            <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>{value}</span>
           )}
         />
       </PieChart>

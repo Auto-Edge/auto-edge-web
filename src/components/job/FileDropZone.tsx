@@ -57,27 +57,23 @@ export const FileDropZone: React.FC<FileDropZoneProps> = ({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={`
-        relative border border-dashed rounded-lg p-6 text-center cursor-pointer mb-4 transition-colors
-        ${isDragging ? 'border-slate-400 bg-slate-800/50' : 'border-slate-700 hover:border-slate-600'}
-      `}
+      className={`file-drop-zone ${isDragging ? 'dragging' : ''}`}
     >
       <input
         type="file"
         accept=".pt,.pth"
         onChange={handleFileSelect}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
       />
 
       {file ? (
         <div>
-          <p className="text-white text-sm">{file.name}</p>
-          <p className="text-slate-500 text-xs mt-1">{formatFileSize(file.size)}</p>
+          <p className="file-name">{file.name}</p>
+          <p className="file-size">{formatFileSize(file.size)}</p>
         </div>
       ) : (
         <div>
-          <p className="text-slate-400 text-sm">Drop .pt or .pth file here</p>
-          <p className="text-slate-600 text-xs mt-1">or click to browse</p>
+          <p className="file-drop-text">Drop .pt or .pth file here</p>
+          <p className="file-drop-subtext">or click to browse</p>
         </div>
       )}
     </div>
