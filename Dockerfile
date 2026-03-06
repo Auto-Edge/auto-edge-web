@@ -6,11 +6,11 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN yarn install
 
 # Copy source code
 COPY . .
 
 EXPOSE 5173
 
-CMD ["npm", "run", "dev"]
+CMD ["yarn", "run", "dev"]
