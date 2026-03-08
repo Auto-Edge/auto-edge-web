@@ -1,56 +1,36 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { registryApi } from '../api/services/registryApi';
 import ModelCard from '../components/registry/ModelCard';
-import type { Model } from '../types';
+import { useModels, useCreateModel } from '../hooks/api/useRegistry';
 
 const ModelsPage: React.FC = () => {
   const navigate = useNavigate();
-  const [models, setModels] = useState<Model[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, isLoading, error } = useModels();
+  const models = data?.models ?? [];
+  const createModel = useCreateModel();
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newModelName, setNewModelName] = useState('');
   const [newModelDescription, setNewModelDescription] = useState('');
-  const [creating, setCreating] = useState(false);
-
-  const fetchModels = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await registryApi.listModels();
-      setModels(response.models);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load models');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchModels();
-  }, [fetchModels]);
 
   const handleCreateModel = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newModelName.trim()) return;
 
-    try {
-      setCreating(true);
-      const model = await registryApi.createModel({
+    createModel.mutate(
+      {
         name: newModelName.trim(),
         description: newModelDescription.trim() || undefined,
-      });
-      setModels((prev) => [model, ...prev]);
-      setShowCreateModal(false);
-      setNewModelName('');
-      setNewModelDescription('');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create model');
-    } finally {
-      setCreating(false);
-    }
+      },
+      {
+        onSuccess: () => {
+          setShowCreateModal(false);
+          setNewModelName('');
+          setNewModelDescription('');
+        },
+      }
+    );
   };
 
   const handleModelClick = (modelId: string) => {
@@ -80,11 +60,11 @@ const ModelsPage: React.FC = () => {
 
       {error && (
         <div className="error-box">
-          <p>{error}</p>
+          <p>{error instanceof Error ? error.message : 'Failed to load models'}</p>
         </div>
       )}
 
-      {loading ? (
+      {isLoading ? (
         <div className="loading-center">
           <div className="spinner spinner-lg" />
         </div>
@@ -150,10 +130,10 @@ const ModelsPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={!newModelName.trim() || creating}
+                  disabled={!newModelName.trim() || createModel.isPending}
                   className="btn btn-primary btn-flex-1"
                 >
-                  {creating ? 'Creating...' : 'Create'}
+                  {createModel.isPending ? 'Creating...' : 'Create'}
                 </button>
               </div>
             </form>

@@ -6,7 +6,7 @@ interface JobCardHeaderProps {
   onRemove: () => void;
 }
 
-export const JobCardHeader: React.FC<JobCardHeaderProps> = ({ status, onRemove }) => {
+export const JobCardHeader: React.FC<JobCardHeaderProps> = React.memo(({ status, onRemove }) => {
   return (
     <div className="job-card-header">
       <StatusBadge status={status} />
@@ -21,6 +21,6 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({ status, onRemove }
       </button>
     </div>
   );
-};
+});
 
 export default JobCardHeader;

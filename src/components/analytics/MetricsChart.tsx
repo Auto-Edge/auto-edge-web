@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   BarChart,
   Bar,
@@ -13,11 +13,11 @@ interface MetricsChartProps {
   data: Record<string, number>;
 }
 
-const MetricsChart: React.FC<MetricsChartProps> = ({ data }) => {
-  const chartData = Object.entries(data).map(([name, value]) => ({
-    name,
-    value,
-  }));
+const MetricsChart: React.FC<MetricsChartProps> = React.memo(({ data }) => {
+  const chartData = useMemo(
+    () => Object.entries(data).map(([name, value]) => ({ name, value })),
+    [data]
+  );
 
   if (chartData.length === 0) {
     return (
@@ -52,6 +52,6 @@ const MetricsChart: React.FC<MetricsChartProps> = ({ data }) => {
       </BarChart>
     </ResponsiveContainer>
   );
-};
+});
 
 export default MetricsChart;

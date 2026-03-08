@@ -5,13 +5,13 @@ interface ProcessingStateProps {
   status: string | null;
 }
 
-export const ProcessingState: React.FC<ProcessingStateProps> = ({ status }) => {
+export const ProcessingState: React.FC<ProcessingStateProps> = React.memo(({ status }) => {
   return (
     <div className="processing-state">
       <LoadingSpinner className="spinner-center" />
       <p className="processing-text">{status || 'Processing'}...</p>
     </div>
   );
-};
+});
 
 export default ProcessingState;

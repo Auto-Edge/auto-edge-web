@@ -12,7 +12,7 @@ const statusStyles: Record<string, string> = {
   Pending: 'status-pending',
 };
 
-export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
+export const StatusBadge: React.FC<StatusBadgeProps> = React.memo(({ status }) => {
   if (!status) return null;
 
   const colorClass = statusStyles[status] || 'status-default';
@@ -22,6 +22,6 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
       {status}
     </span>
   );
-};
+});
 
 export default StatusBadge;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   PieChart,
   Pie,
@@ -14,11 +14,11 @@ interface DevicePieChartProps {
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
-const DevicePieChart: React.FC<DevicePieChartProps> = ({ data }) => {
-  const chartData = Object.entries(data).map(([name, value]) => ({
-    name,
-    value,
-  }));
+const DevicePieChart: React.FC<DevicePieChartProps> = React.memo(({ data }) => {
+  const chartData = useMemo(
+    () => Object.entries(data).map(([name, value]) => ({ name, value })),
+    [data]
+  );
 
   if (chartData.length === 0) {
     return (
@@ -63,6 +63,6 @@ const DevicePieChart: React.FC<DevicePieChartProps> = ({ data }) => {
       </PieChart>
     </ResponsiveContainer>
   );
-};
+});
 
 export default DevicePieChart;

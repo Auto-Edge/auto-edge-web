@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useJobPolling } from '../../hooks/useJobPolling';
+import { useUploadModel, useStartDemo, useConversionStatus } from '../../hooks/api/useConversions';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { conversionApi } from '../../api/services/conversionApi';
 
@@ -20,48 +20,49 @@ interface JobCardProps {
 export const JobCard: React.FC<JobCardProps> = ({ jobId, onRemove, onStarted }) => {
   const [taskId, setTaskId] = useState<string | null>(null);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const { file, isUploading, error: uploadError, selectFile, setError } = useFileUpload();
-  const { status, result, error: pollingError, isPolling } = useJobPolling(taskId);
+  const { file, error: fileError, selectFile, setError } = useFileUpload();
 
-  const error = uploadError || pollingError;
-  const isComplete = result?.status === 'success';
-  const isFailed = status === 'Failed' || !!error;
+  const upload = useUploadModel();
+  const startDemo = useStartDemo();
+  const statusQuery = useConversionStatus(taskId);
+
+  const status = statusQuery.data?.status ?? null;
+  const result = statusQuery.data?.result ?? null;
+  const isComplete = statusQuery.data?.isComplete ?? false;
+  const isFailed = statusQuery.data?.isFailed ?? false;
+  const isPolling = statusQuery.data?.isPolling ?? false;
+
+  const error = fileError || (upload.error?.message ?? null) || (startDemo.error?.message ?? null);
   const isProcessing = isPolling && !isComplete && !isFailed;
 
   const displayStatus = isComplete ? 'Complete' : isFailed ? 'Failed' : status;
 
-  const handleUpload = useCallback(async () => {
+  const handleUpload = useCallback(() => {
     if (!file) return;
 
-    try {
-      const data = await conversionApi.uploadModel(file);
-      setTaskId(data.task_id);
-      selectFile(null);
-      // Notify parent that conversion started (now persisted)
-      if (onStarted) {
-        onStarted(data.conversion_id);
-        onRemove(jobId); // Remove this ephemeral job card
-      }
-    } catch (err) {
-      const error = err as Error;
-      setError(error.message || 'Upload failed');
-    }
-  }, [file, selectFile, setError, onStarted, onRemove, jobId]);
+    upload.mutate(file, {
+      onSuccess: (data) => {
+        setTaskId(data.task_id);
+        selectFile(null);
+        if (onStarted) {
+          onStarted(data.conversion_id);
+          onRemove(jobId);
+        }
+      },
+    });
+  }, [file, upload, selectFile, onStarted, onRemove, jobId]);
 
-  const handleDemo = useCallback(async () => {
-    try {
-      const data = await conversionApi.startDemoConversion();
-      setTaskId(data.task_id);
-      // Notify parent that conversion started (now persisted)
-      if (onStarted) {
-        onStarted(data.conversion_id);
-        onRemove(jobId); // Remove this ephemeral job card
-      }
-    } catch (err) {
-      const error = err as Error;
-      setError(error.message || 'Demo request failed');
-    }
-  }, [setError, onStarted, onRemove, jobId]);
+  const handleDemo = useCallback(() => {
+    startDemo.mutate(undefined, {
+      onSuccess: (data) => {
+        setTaskId(data.task_id);
+        if (onStarted) {
+          onStarted(data.conversion_id);
+          onRemove(jobId);
+        }
+      },
+    });
+  }, [startDemo, onStarted, onRemove, jobId]);
 
   const handleDownload = useCallback(() => {
     if (result?.output_file) {
@@ -93,7 +94,7 @@ export const JobCard: React.FC<JobCardProps> = ({ jobId, onRemove, onStarted }) 
           />
           <ActionButtons
             file={file}
-            isUploading={isUploading}
+            isUploading={upload.isPending}
             onUpload={handleUpload}
             onDemo={handleDemo}
           />

@@ -8,7 +8,7 @@ interface StatsCardProps {
   large?: boolean;
 }
 
-const StatsCard: React.FC<StatsCardProps> = ({
+const StatsCard: React.FC<StatsCardProps> = React.memo(({
   label,
   value,
   icon,
@@ -38,6 +38,6 @@ const StatsCard: React.FC<StatsCardProps> = ({
       </p>
     </div>
   );
-};
+});
 
 export default StatsCard;

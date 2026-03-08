@@ -5,7 +5,7 @@ interface ResultsDisplayProps {
   result: ConversionResult | null;
 }
 
-export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
+export const ResultsDisplay: React.FC<ResultsDisplayProps> = React.memo(({ result }) => {
   if (!result) return null;
 
   return (
@@ -32,6 +32,6 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
       </div>
     </div>
   );
-};
+});
 
 export default ResultsDisplay;

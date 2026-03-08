@@ -5,7 +5,7 @@ interface PublishButtonProps {
   onClick: () => void;
 }
 
-const PublishButton: React.FC<PublishButtonProps> = ({ isPublished, onClick }) => {
+const PublishButton: React.FC<PublishButtonProps> = React.memo(({ isPublished, onClick }) => {
   return (
     <button
       onClick={onClick}
@@ -16,6 +16,6 @@ const PublishButton: React.FC<PublishButtonProps> = ({ isPublished, onClick }) =
       {isPublished ? 'Published' : 'Draft'}
     </button>
   );
-};
+});
 
 export default PublishButton;

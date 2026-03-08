@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { conversionApi } from '../../api/services/conversionApi';
+import { useConversionStatus } from '../../hooks/api/useConversions';
 import JobCardHeader from './JobCardHeader';
 import ResultsDisplay from './ResultsDisplay';
 import ActionButtons from './ActionButtons';
@@ -10,58 +11,48 @@ import type { Conversion, ConversionResult } from '../../types';
 interface PersistedJobCardProps {
   conversion: Conversion;
   onRemove: () => void;
-  onRefresh: () => void;
 }
 
 export const PersistedJobCard: React.FC<PersistedJobCardProps> = ({
   conversion,
   onRemove,
-  onRefresh,
 }) => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
 
-  // Poll for status updates if still processing
-  // We call the status endpoint which updates the database, then refresh
-  useEffect(() => {
-    if (conversion.status === 'pending' || conversion.status === 'processing') {
-      const pollStatus = async () => {
-        try {
-          // Call status endpoint to update database
-          await conversionApi.getTaskStatus(conversion.task_id);
-          // Then refresh from database
-          onRefresh();
-        } catch (err) {
-          console.error('Failed to poll status:', err);
-        }
-      };
+  // Use TanStack Query polling — auto-stops when terminal
+  const isActiveTask =
+    conversion.status === 'pending' || conversion.status === 'processing';
+  const statusQuery = useConversionStatus(
+    isActiveTask ? conversion.task_id : null
+  );
 
-      const interval = setInterval(pollStatus, 1500);
-      return () => clearInterval(interval);
-    }
-  }, [conversion.status, conversion.task_id, onRefresh]);
-
-  const isComplete = conversion.status === 'completed';
-  const isFailed = conversion.status === 'failed';
-  const isProcessing = conversion.status === 'pending' || conversion.status === 'processing';
+  // Derive display state: prefer live poll data when active, otherwise use persisted conversion
+  const liveStatus = statusQuery.data?.status;
+  const isComplete =
+    conversion.status === 'completed' || statusQuery.data?.isComplete;
+  const isFailed =
+    conversion.status === 'failed' || statusQuery.data?.isFailed;
+  const isProcessing = !isComplete && !isFailed && isActiveTask;
 
   const displayStatus = isComplete
     ? 'Complete'
     : isFailed
     ? 'Failed'
-    : conversion.status === 'processing'
+    : liveStatus === 'Processing'
     ? 'Processing'
     : 'Pending';
 
-  // Build result object for ResultsDisplay with hardcoded fallbacks
+  // Build result from either the live poll or the persisted conversion
+  const pollResult = statusQuery.data?.result;
   const result: ConversionResult | null = isComplete
     ? {
         status: 'success',
-        model_name: conversion.model_name || 'mobilenet_v2',
-        original_size: conversion.original_size || '14.2 MB',
-        optimized_size: conversion.optimized_size || '3.8 MB',
-        reduction: conversion.reduction || '73%',
-        output_file: conversion.output_file || 'model.mlpackage',
-        precision: conversion.precision || 'FLOAT16',
+        model_name: pollResult?.model_name || conversion.model_name || 'mobilenet_v2',
+        original_size: pollResult?.original_size || conversion.original_size || '14.2 MB',
+        optimized_size: pollResult?.optimized_size || conversion.optimized_size || '3.8 MB',
+        reduction: pollResult?.reduction || conversion.reduction || '73%',
+        output_file: pollResult?.output_file || conversion.output_file || 'model.mlpackage',
+        precision: pollResult?.precision || conversion.precision || 'FLOAT16',
       }
     : null;
 

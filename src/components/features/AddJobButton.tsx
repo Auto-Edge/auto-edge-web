@@ -4,7 +4,7 @@ interface AddJobButtonProps {
   onClick: () => void;
 }
 
-export const AddJobButton: React.FC<AddJobButtonProps> = ({ onClick }) => {
+export const AddJobButton: React.FC<AddJobButtonProps> = React.memo(({ onClick }) => {
   return (
     <button
       onClick={onClick}
@@ -13,6 +13,6 @@ export const AddJobButton: React.FC<AddJobButtonProps> = ({ onClick }) => {
       <span>+ Add job</span>
     </button>
   );
-};
+});
 
 export default AddJobButton;

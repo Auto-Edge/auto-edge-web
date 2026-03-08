@@ -66,12 +66,15 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
   };
 
+  const { signal, ...restOptions } = options;
+
   const fetchOptions: RequestInit = {
-    ...options,
+    ...restOptions,
     headers: {
       ...defaultHeaders,
-      ...options.headers,
+      ...restOptions.headers,
     },
+    ...(signal ? { signal } : {}),
   };
 
   try {

@@ -1,40 +1,22 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import ErrorBoundary from '../components/common/ErrorBoundary';
 import { JobCard } from '../components/job/JobCard';
 import { PersistedJobCard } from '../components/job/PersistedJobCard';
 import JobGrid from '../components/features/JobGrid';
 import AddJobButton from '../components/features/AddJobButton';
-import { conversionApi } from '../api/services/conversionApi';
-import type { Job, Conversion } from '../types';
+import { useConversions, useDeleteConversion } from '../hooks/api/useConversions';
+import type { Job } from '../types';
 
 const generateId = (): string =>
   `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 const ConvertPage: React.FC = () => {
-  // Ephemeral jobs (before conversion starts)
   const [newJobs, setNewJobs] = useState<Job[]>([]);
 
-  // Persisted conversions (fetched from backend)
-  const [conversions, setConversions] = useState<Conversion[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch persisted conversions on mount
-  useEffect(() => {
-    fetchConversions();
-  }, []);
-
-  const fetchConversions = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await conversionApi.listConversions(20);
-      setConversions(response.conversions);
-    } catch (err) {
-      console.error('Failed to fetch conversions:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const { data, isLoading } = useConversions(20);
+  const conversions = data?.conversions ?? [];
+  const deleteConversion = useDeleteConversion();
 
   const addJob = useCallback(() => {
     setNewJobs((prev) => [...prev, { id: generateId() }]);
@@ -45,37 +27,10 @@ const ConvertPage: React.FC = () => {
   }, []);
 
   // Called when a new job starts conversion (becomes persisted)
+  // TanStack Query auto-invalidates via useUploadModel/useStartDemo onSuccess
   const onJobStarted = useCallback((_conversionId: string) => {
-    // Refresh the conversions list to include the new one
-    fetchConversions();
-  }, [fetchConversions]);
-
-  const removeConversion = useCallback(async (conversionId: string) => {
-    try {
-      await conversionApi.deleteConversion(conversionId);
-      
-      // Fix: Ensure both IDs are compared as strings to avoid type mismatches
-      setConversions((prev) => 
-        prev.filter((c) => String(c.id) !== String(conversionId))
-      );
-    } catch (err) {
-      console.error('Failed to delete conversion:', err);
-    }
+    // no-op: query invalidation handles the refresh
   }, []);
-
-  const refreshConversion = useCallback(async (conversionId: string) => {
-    try {
-      const updated = await conversionApi.getConversion(conversionId);
-      setConversions((prev) =>
-        prev.map((c) => (c.id === conversionId ? updated : c))
-      );
-    } catch (err) {
-      console.error('Failed to refresh conversion:', err);
-    }
-  }, []);
-
-  // Show add button if no jobs exist
-  // Future: const showAddButton = newJobs.length === 0 && conversions.length === 0;
 
   return (
     <div>
@@ -87,23 +42,20 @@ const ConvertPage: React.FC = () => {
       </div>
 
       <ErrorBoundary>
-        {loading ? (
+        {isLoading ? (
           <div className="loading-center-sm">
             <div className="spinner spinner-lg" />
           </div>
         ) : (
           <JobGrid>
-            {/* Persisted conversions */}
             {conversions.map((conversion) => (
               <PersistedJobCard
                 key={conversion.id}
                 conversion={conversion}
-                onRemove={() => removeConversion(conversion.id)}
-                onRefresh={() => refreshConversion(conversion.id)}
+                onRemove={() => deleteConversion.mutate(conversion.id)}
               />
             ))}
 
-            {/* New jobs (not yet started) */}
             {newJobs.map((job) => (
               <JobCard
                 key={job.id}
@@ -113,7 +65,6 @@ const ConvertPage: React.FC = () => {
               />
             ))}
 
-            {/* Add button */}
             <AddJobButton onClick={addJob} />
           </JobGrid>
         )}

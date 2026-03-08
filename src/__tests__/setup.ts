@@ -20,6 +20,13 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
+// Mock ResizeObserver (required by Recharts ResponsiveContainer)
+(globalThis as Record<string, unknown>).ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+
 // Mock window.open
 window.open = vi.fn();
 

@@ -11,7 +11,7 @@ interface ActionButtonsProps {
   onRegister?: () => void;
 }
 
-export const ActionButtons: React.FC<ActionButtonsProps> = ({
+export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(({
   file,
   isUploading = false,
   isComplete = false,
@@ -66,6 +66,6 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
       </button>
     </div>
   );
-};
+});
 
 export default ActionButtons;

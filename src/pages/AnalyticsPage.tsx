@@ -1,34 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 
-import { analyticsApi } from '../api/services/analyticsApi';
 import StatsCard from '../components/analytics/StatsCard';
 import DevicePieChart from '../components/analytics/DevicePieChart';
 import MetricsChart from '../components/analytics/MetricsChart';
-import type { DashboardSummary } from '../types';
+import { useDashboardSummary } from '../hooks/api/useAnalytics';
 
 const AnalyticsPage: React.FC = () => {
-  const [summary, setSummary] = useState<DashboardSummary | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: summary, isLoading, error, refetch } = useDashboardSummary();
 
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await analyticsApi.getDashboardSummary();
-      setSummary(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load analytics');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="loading-center">
         <div className="spinner spinner-lg" />
@@ -39,9 +19,9 @@ const AnalyticsPage: React.FC = () => {
   if (error) {
     return (
       <div className="empty-state">
-        <p className="text-red-400 mb-4">{error}</p>
+        <p className="text-red-400 mb-4">{error instanceof Error ? error.message : 'Failed to load analytics'}</p>
         <button
-          onClick={fetchData}
+          onClick={() => refetch()}
           className="btn btn-secondary"
         >
           Retry

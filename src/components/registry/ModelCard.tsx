@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { Model } from '../../types';
 
 interface ModelCardProps {
@@ -6,11 +6,17 @@ interface ModelCardProps {
   onClick: () => void;
 }
 
-const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
+const ModelCard: React.FC<ModelCardProps> = React.memo(({ model, onClick }) => {
   const versionCount = model.versions.length;
-  const publishedCount = model.versions.filter((v) => v.is_published).length;
+  const publishedCount = useMemo(
+    () => model.versions.filter((v) => v.is_published).length,
+    [model.versions]
+  );
   const latestVersion = model.versions[0]?.version;
-  const totalDownloads = model.versions.reduce((sum, v) => sum + v.download_count, 0);
+  const totalDownloads = useMemo(
+    () => model.versions.reduce((sum, v) => sum + v.download_count, 0),
+    [model.versions]
+  );
 
   return (
     <button
@@ -54,6 +60,6 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
       </div>
     </button>
   );
-};
+});
 
 export default ModelCard;
